@@ -670,9 +670,15 @@
         row.querySelectorAll(".status-btn").forEach(button => {
           button.addEventListener("click", () => {
             item.status = button.dataset.status;
-            saveSubscriptions();
-        
 
+            window.trackEvent?.("subscription_status_changed", {
+              language: window.getSiteLanguage?.() || document.documentElement.lang || "unknown",
+              status: item.status,
+              subscription_count: subscriptions.length
+            });
+
+            saveSubscriptions();
+            render();
           });
         });
 
