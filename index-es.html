@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Una calculadora gratuita para conocer el costo mensual y anual de tus suscripciones, el costo por uso y tus posibles ahorros." />
+  <title>Calculadora de Costos de Suscripciones | SubCheck</title>
+
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #18212f;
+      --muted: #667085;
+      --border: #dfe4ea;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --keep-bg: #dcfce7;
+      --keep-text: #166534;
+      --unsure-bg: #e5e7eb;
+      --unsure-text: #374151;
+      --cancel-bg: #fee2e2;
+      --cancel-text: #991b1b;
+      --danger: #b42318;
+      --shadow: 0 12px 35px rgba(16, 24, 40, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+
+
+    .language-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 18px;
+    }
+
+    .language-select {
+      width: auto;
+      min-width: 145px;
+      min-height: 38px;
+      padding: 7px 34px 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+
+    .brand {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 5vw, 3.3rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0 auto 10px;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .privacy-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .entry-card {
+      padding: 24px;
+      margin-bottom: 22px;
+    }
+
+    .entry-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr 0.9fr 0.9fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .add-btn {
+      min-height: 44px;
+      border: 0;
+      border-radius: 10px;
+      padding: 0 18px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .add-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .summary-card {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .savings .summary-value {
+      color: var(--keep-text);
+    }
+
+    .subscriptions-card {
+      overflow: hidden;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 22px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .clear-btn {
+      border: 1px solid #f3b8b3;
+      background: #fff;
+      color: var(--danger);
+      border-radius: 9px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .clear-btn:hover {
+      background: #fff5f4;
+    }
+
+    .empty-state {
+      padding: 42px 22px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .subscription-list {
+      display: grid;
+    }
+
+    .subscription-row {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .subscription-row:last-child {
+      border-bottom: 0;
+    }
+
+    .row-top {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.4fr) repeat(3, minmax(120px, 0.65fr)) auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .subscription-name {
+      font-weight: 800;
+      font-size: 1.05rem;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      margin-bottom: 2px;
+    }
+
+    .metric-value {
+      font-weight: 700;
+    }
+
+    .delete-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .delete-btn:hover {
+      background: #f2f4f7;
+      color: var(--danger);
+    }
+
+    .status-wrap {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .status-label {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-right: 2px;
+    }
+
+    .status-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.84rem;
+    }
+
+    .status-btn[data-status="keep"].active {
+      background: var(--keep-bg);
+      border-color: #86efac;
+      color: var(--keep-text);
+    }
+
+    .status-btn[data-status="unsure"].active {
+      background: var(--unsure-bg);
+      border-color: #cbd5e1;
+      color: var(--unsure-text);
+    }
+
+    .status-btn[data-status="cancel"].active {
+      background: var(--cancel-bg);
+      border-color: #fca5a5;
+      color: var(--cancel-text);
+    }
+
+
+    .after-cancel-card {
+      display: none;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .after-cancel-card.visible {
+      display: block;
+    }
+
+    .after-cancel-card h2 {
+      margin: 0 0 6px;
+      font-size: 1.2rem;
+    }
+
+    .after-cancel-card .after-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .comparison-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fbfcfe;
+      text-align: center;
+    }
+
+    .comparison-box .metric-label {
+      margin-bottom: 5px;
+    }
+
+    .comparison-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .savings-line {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--keep-text);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .entry-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .add-btn {
+        width: 100%;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .row-top {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .delete-btn {
+        justify-self: end;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        width: min(100% - 20px, 1100px);
+        padding-top: 24px;
+      }
+
+      .entry-grid,
+      .summary-grid,
+      .row-top,
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .clear-btn {
+        width: 100%;
+      }
+
+      .delete-btn {
+        justify-self: start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="language-bar">
+      <label for="languageSelect" style="position:absolute;left:-9999px;">Language</label>
+      <select id="languageSelect" class="language-select" aria-label="Language">
+          <option value="index.html">English</option>
+          <option value="index-es.html" selected>Español</option>
+          <option value="index-pt.html">Português</option>
+          <option value="index-fr.html">Français</option>
+          <option value="index-de.html">Deutsch</option>
+          <option value="index-it.html">Italiano</option>
+      </select>
+    </div>
+
+    <header>
+      <div class="brand">SubCheck</div>
+      <h1>Calculadora de Costos de Suscripciones</h1>
+      <p class="subtitle">
+        Descubre cuánto cuestan tus suscripciones por mes, por año y por uso.
+      </p>
+      <p class="privacy-note">
+        Tus datos permanecen en este navegador. No necesitas una cuenta ni conectar tu banco.
+      </p>
+    </header>
+
+    <section class="card entry-card" aria-label="Agregar una suscripción">
+      <form id="subscriptionForm">
+        <div class="entry-grid">
+          <div>
+            <label for="name">Nombre de la suscripción</label>
+            <input id="name" type="text" placeholder="Nombre de la suscripción" maxlength="60" required />
+          </div>
+
+          <div>
+            <label for="price">Precio</label>
+            <input id="price" type="number" placeholder="0.00" min="0" step="0.01" required />
+          </div>
+
+          <div>
+            <label for="frequency">Frecuencia de cobro</label>
+            <select id="frequency">
+              <option value="monthly">Mensual</option>
+              <option value="yearly">Anual</option>
+              <option value="weekly">Semanal</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="uses">Usos por mes <span style="font-weight:400;color:#667085;">(opcional)</span></label>
+            <input id="uses" type="number" placeholder="0" min="0" step="1" />
+          </div>
+
+          <button class="add-btn" type="submit">+ Agregar Suscripción</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="summary-grid" aria-label="Totales de suscripciones">
+      <div class="card summary-card">
+        <div class="summary-label">Costo Mensual</div>
+        <div class="summary-value" id="monthlyTotal">$0.00</div>
+      </div>
+
+      <div class="card summary-card">
+        <div class="summary-label">Costo Anual</div>
+        <div class="summary-value" id="yearlyTotal">$0.00</div>
+      </div>
+
+      <div class="card summary-card">
+        <div class="summary-label">Costo a 5 Años</div>
+        <div class="summary-value" id="fiveYearTotal">$0.00</div>
+      </div>
+
+      <div class="card summary-card savings">
+        <div class="summary-label">Ahorro Anual Potencial</div>
+        <div class="summary-value" id="savingsTotal">$0.00</div>
+      </div>
+    </section>
+
+    <section class="card after-cancel-card" id="afterCancelCard" aria-label="Costos después de cancelaciones">
+      <h2>Después de Cancelar</h2>
+      <p class="after-note">Si cancelas todo lo marcado como Cancelar, tus costos de suscripción serían:</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-box">
+          <span class="metric-label">Costo Mensual</span>
+          <div class="comparison-value" id="afterMonthly">$0.00</div>
+        </div>
+
+        <div class="comparison-box">
+          <span class="metric-label">Costo Anual</span>
+          <div class="comparison-value" id="afterYearly">$0.00</div>
+        </div>
+
+        <div class="comparison-box">
+          <span class="metric-label">Costo a 5 Años</span>
+          <div class="comparison-value" id="afterFiveYear">$0.00</div>
+        </div>
+      </div>
+
+      <div class="savings-line" id="savingsLine">
+        Podrías ahorrar $0.00/mes · $0.00/año · $0.00 en 5 años
+      </div>
+    </section>
+
+    <section class="card subscriptions-card">
+      <div class="section-head">
+        <div>
+          <h2>Tus suscripciones</h2>
+          <p>Marca cada suscripción como Mantener, No estoy seguro o Cancelar para ver tus posibles ahorros.</p>
+        </div>
+        <button class="clear-btn" id="clearAllBtn" type="button">Borrar Todos los Datos</button>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        Agrega tu primera suscripción arriba.
+      </div>
+
+      <div id="subscriptionList" class="subscription-list"></div>
+    </section>
+
+    <footer>
+      Los datos de tus suscripciones se guardan localmente en tu navegador.
+    </footer>
+  </main>
+
+  <script src="analytics.js"></script>
+  <script>
+    const STORAGE_KEY = "subscriptionCostCalculatorData";
+
+    let subscriptions = loadSubscriptions();
+
+    const form = document.getElementById("subscriptionForm");
+    const nameInput = document.getElementById("name");
+    const priceInput = document.getElementById("price");
+    const frequencyInput = document.getElementById("frequency");
+    const usesInput = document.getElementById("uses");
+    const list = document.getElementById("subscriptionList");
+    const emptyState = document.getElementById("emptyState");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+
+    function loadSubscriptions() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveSubscriptions() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(subscriptions));
+    }
+
+    function monthlyCost(item) {
+      if (item.frequency === "yearly") return item.price / 12;
+      if (item.frequency === "weekly") return item.price * 52 / 12;
+      return item.price;
+    }
+
+    function yearlyCost(item) {
+      if (item.frequency === "yearly") return item.price;
+      if (item.frequency === "weekly") return item.price * 52;
+      return item.price * 12;
+    }
+
+    function money(value) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(value);
+    }
+
+    function costPerUse(item) {
+      if (!item.uses || item.uses <= 0) return null;
+      return monthlyCost(item) / item.uses;
+    }
+
+    function render() {
+      list.innerHTML = "";
+
+      emptyState.style.display = subscriptions.length ? "none" : "block";
+      clearAllBtn.style.display = subscriptions.length ? "inline-block" : "none";
+
+      subscriptions.forEach(item => {
+        const monthly = monthlyCost(item);
+        const yearly = yearlyCost(item);
+        const perUse = costPerUse(item);
+
+        const row = document.createElement("article");
+        row.className = "subscription-row";
+
+        row.innerHTML = `
+          <div class="row-top">
+            <div class="subscription-name">${escapeHtml(item.name)}</div>
+
+            <div>
+              <span class="metric-label">Costo mensual</span>
+              <span class="metric-value">${money(monthly)}</span>
+            </div>
+
+            <div>
+              <span class="metric-label">Costo anual</span>
+              <span class="metric-value">${money(yearly)}</span>
+            </div>
+
+            <div>
+              <span class="metric-label">Costo por uso</span>
+              <span class="metric-value">${perUse === null ? "—" : money(perUse)}</span>
+            </div>
+
+            <button class="delete-btn" type="button" aria-label="Eliminar ${escapeHtml(item.name)}" title="Eliminar">
+              ✕
+            </button>
+          </div>
+
+          <div class="status-wrap">
+            <span class="status-label">Estado:</span>
+            <button type="button" class="status-btn ${item.status === "keep" ? "active" : ""}" data-status="keep">Mantener</button>
+            <button type="button" class="status-btn ${item.status === "unsure" ? "active" : ""}" data-status="unsure">No estoy seguro</button>
+            <button type="button" class="status-btn ${item.status === "cancel" ? "active" : ""}" data-status="cancel">Cancelar</button>
+          </div>
+        `;
+
+        row.querySelectorAll(".status-btn").forEach(button => {
+          button.addEventListener("click", () => {
+            item.status = button.dataset.status;
+            saveSubscriptions();
+        
+    const languageSelect = document.getElementById("languageSelect");
+    if (languageSelect) {
+      languageSelect.addEventListener("change", () => {
+        const targetOption = languageSelect.options[languageSelect.selectedIndex];
+        const targetLanguage =
+          targetOption?.value?.match(/index-([a-z]{2})\.html$/)?.[1] ||
+          (targetOption?.value === "index.html" ? "en" : "unknown");
+
+        window.trackEvent?.("language_changed", {
+          from_language: window.getSiteLanguage?.() || "unknown",
+          to_language: targetLanguage
+        });
+
+        window.location.href = languageSelect.value;
+      });
+    }
+
+    render();
+          });
+        });
+
+        row.querySelector(".delete-btn").addEventListener("click", () => {
+          subscriptions = subscriptions.filter(sub => sub.id !== item.id);
+
+          window.trackEvent?.("subscription_deleted", {
+            language: window.getSiteLanguage?.() || "unknown",
+            subscription_count: subscriptions.length
+          });
+
+          saveSubscriptions();
+          render();
+        });
+
+        list.appendChild(row);
+      });
+
+      updateTotals();
+    }
+
+    function updateTotals() {
+      const monthly = subscriptions.reduce((sum, item) => sum + monthlyCost(item), 0);
+      const yearly = subscriptions.reduce((sum, item) => sum + yearlyCost(item), 0);
+
+      const cancelled = subscriptions.filter(item => item.status === "cancel");
+      const monthlySavings = cancelled.reduce((sum, item) => sum + monthlyCost(item), 0);
+      const yearlySavings = cancelled.reduce((sum, item) => sum + yearlyCost(item), 0);
+      const fiveYearSavings = yearlySavings * 5;
+
+      const afterMonthly = Math.max(0, monthly - monthlySavings);
+      const afterYearly = Math.max(0, yearly - yearlySavings);
+      const afterFiveYear = afterYearly * 5;
+
+      document.getElementById("monthlyTotal").textContent = money(monthly);
+      document.getElementById("yearlyTotal").textContent = money(yearly);
+      document.getElementById("fiveYearTotal").textContent = money(yearly * 5);
+      document.getElementById("savingsTotal").textContent = money(yearlySavings);
+
+      const afterCancelCard = document.getElementById("afterCancelCard");
+
+      if (cancelled.length > 0) {
+        afterCancelCard.classList.add("visible");
+        document.getElementById("afterMonthly").textContent = money(afterMonthly);
+        document.getElementById("afterYearly").textContent = money(afterYearly);
+        document.getElementById("afterFiveYear").textContent = money(afterFiveYear);
+        document.getElementById("savingsLine").textContent =
+          `Podrías ahorrar ${money(monthlySavings)}/mes · ${money(yearlySavings)}/año · ${money(fiveYearSavings)} en 5 años`;
+      } else {
+        afterCancelCard.classList.remove("visible");
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const name = nameInput.value.trim();
+      const price = Number(priceInput.value);
+      const uses = usesInput.value === "" ? null : Number(usesInput.value);
+
+      if (!name || Number.isNaN(price) || price < 0) return;
+
+      subscriptions.push({
+        id: Date.now(),
+        name,
+        price,
+        frequency: frequencyInput.value,
+        uses: uses && uses > 0 ? uses : null,
+        status: "unsure"
+      });
+
+      window.trackEvent?.("subscription_added", {
+        language: window.getSiteLanguage?.() || "unknown",
+        billing_frequency: frequencyInput.value,
+        has_usage_value: Boolean(uses && uses > 0),
+        subscription_count: subscriptions.length
+      });
+
+      saveSubscriptions();
+      render();
+
+      form.reset();
+      frequencyInput.value = "monthly";
+      nameInput.focus();
+    });
+
+    let clearConfirmPending = false;
+    let clearConfirmTimer = null;
+
+    clearAllBtn.addEventListener("click", () => {
+      if (!subscriptions.length) return;
+
+      if (!clearConfirmPending) {
+        clearConfirmPending = true;
+        clearAllBtn.textContent = "Haz Clic Otra Vez para Borrar";
+        clearAllBtn.style.background = "#fff5f4";
+
+        clearTimeout(clearConfirmTimer);
+        clearConfirmTimer = setTimeout(() => {
+          clearConfirmPending = false;
+          clearAllBtn.textContent = "Borrar Todos los Datos";
+          clearAllBtn.style.background = "";
+        }, 4000);
+
+        return;
+      }
+
+      clearTimeout(clearConfirmTimer);
+
+      window.trackEvent?.("all_data_cleared", {
+        language: window.getSiteLanguage?.() || "unknown"
+      });
+
+      subscriptions = [];
+      localStorage.removeItem(STORAGE_KEY);
+      clearConfirmPending = false;
+      clearAllBtn.textContent = "Borrar Todos los Datos";
+      clearAllBtn.style.background = "";
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
