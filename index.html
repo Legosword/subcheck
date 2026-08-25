@@ -672,24 +672,7 @@
             item.status = button.dataset.status;
             saveSubscriptions();
         
-    const languageSelect = document.getElementById("languageSelect");
-    if (languageSelect) {
-      languageSelect.addEventListener("change", () => {
-        const targetOption = languageSelect.options[languageSelect.selectedIndex];
-        const targetLanguage =
-          targetOption?.value?.match(/index-([a-z]{2})\.html$/)?.[1] ||
-          (targetOption?.value === "index.html" ? "en" : "unknown");
 
-        window.trackEvent?.("language_changed", {
-          from_language: window.getSiteLanguage?.() || "unknown",
-          to_language: targetLanguage
-        });
-
-        window.location.href = languageSelect.value;
-      });
-    }
-
-    render();
           });
         });
 
@@ -819,6 +802,24 @@
       clearAllBtn.style.background = "";
       render();
     });
+
+
+    const languageSelect = document.getElementById("languageSelect");
+
+    if (languageSelect) {
+      languageSelect.addEventListener("change", () => {
+        const targetValue = languageSelect.value;
+        const match = targetValue.match(/index-([a-z]{2})\.html$/);
+        const targetLanguage = match ? match[1] : (targetValue === "index.html" ? "en" : "unknown");
+
+        window.trackEvent?.("language_changed", {
+          from_language: window.getSiteLanguage?.() || document.documentElement.lang || "unknown",
+          to_language: targetLanguage
+        });
+
+        window.location.href = targetValue;
+      });
+    }
 
     render();
   </script>
