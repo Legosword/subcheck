@@ -449,7 +449,9 @@
     window.gtag = gtag;
 
     gtag("js", new Date());
-    gtag("config", "G-FQTXHXE8PL");
+    gtag("config", "G-FQTXHXE8PL", {
+      debug_mode: true
+    });
 
     window.trackEvent = function (eventName, parameters = {}) {
       gtag("event", eventName, parameters);
