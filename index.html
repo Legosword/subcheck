@@ -441,6 +441,24 @@
       }
     }
   </style>
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FQTXHXE8PL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    window.gtag = gtag;
+
+    gtag("js", new Date());
+    gtag("config", "G-FQTXHXE8PL");
+
+    window.trackEvent = function (eventName, parameters = {}) {
+      gtag("event", eventName, parameters);
+    };
+
+    window.getSiteLanguage = function () {
+      return document.documentElement.lang || "unknown";
+    };
+  </script>
 </head>
 
 <body>
@@ -569,7 +587,6 @@
     </footer>
   </main>
 
-  <script src="analytics.js"></script>
   <script>
     const STORAGE_KEY = "subscriptionCostCalculatorData";
 
