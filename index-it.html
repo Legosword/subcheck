@@ -385,6 +385,24 @@
       color: var(--keep-text);
     }
 
+
+    .footer-links {
+      margin-top: 6px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
     footer {
       text-align: center;
       color: var(--muted);
@@ -592,6 +610,12 @@
 
     <footer>
       I dati dei tuoi abbonamenti vengono salvati localmente nel browser.
+
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <span>·</span>
+        <a href="privacy.html">Privacy</a>
+      </div>
     </footer>
   </main>
 
